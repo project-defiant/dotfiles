@@ -31,9 +31,11 @@ packer.startup(function(use)
 	use 'saadparwaiz1/cmp_luasnip'
 	use 'L3MON4D3/LuaSnip'
 	use 'rafamadriz/friendly-snippets'
+	use { 'nvim-treesitter/nvim-treesitter',    run = function() require('nvim-treesitter.install').update({ with_sync = true }) end, }
+	use { 'nvim-telescope/telescope-fzf-native.nvim', run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build" } 
+	use { 'nvim-telescope/telescope.nvim', tag = '0.1.0' }
 	use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true } }   -- status line
 	use { "akinsho/toggleterm.nvim", tag = 'v2.*', config = function() end }
-  use { "nvim-telescope/telescope.nvim", tag = "0.1.0" } 
 end)
 
 
