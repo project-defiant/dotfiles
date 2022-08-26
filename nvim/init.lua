@@ -5,7 +5,7 @@ require("user.plugin_config.colorscheme")
 require("user.plugin_config.statusbar")
 require("user.plugin_config.terminal")
 require("user.plugin_config.cmp")
-require("user.lsp")
+require("user.plugin_config.lsp")
 require("user.plugin_config.telescope")
-
+require("user.plugin_config.tree")
 require'lspconfig'.pyright.setup{}

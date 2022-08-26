@@ -23,6 +23,7 @@ packer.startup(function(use)
 	use 'neovim/nvim-lspconfig'   -- lsp
 	use 'folke/tokyonight.nvim'   -- color scheme
 	use 'kyazdani42/nvim-web-devicons'
+	use 'kyazdani42/nvim-tree.lua'
 	use { "windwp/nvim-autopairs", config = function() require("nvim-autopairs").setup {} end } -- autocompletion of brackets & quotes
 	use 'hrsh7th/nvim-cmp' -- autocompletion
 	use 'hrsh7th/cmp-buffer'
