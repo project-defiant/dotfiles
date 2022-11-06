@@ -40,4 +40,10 @@ return require('packer').startup(function(use)
 		-- nvim tree
 		use('nvim-tree/nvim-web-devicons')
 		use('nvim-tree/nvim-tree.lua')
+	  use{
+        'nvim-treesitter/nvim-treesitter',
+        run = ':TSUpdate'
+    }
+		use('glepnir/lspsaga.nvim')
+		use('mhartington/oceanic-next')
 	end)
