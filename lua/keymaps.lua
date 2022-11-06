@@ -34,6 +34,8 @@ keymap("i", "`" , "``<Esc>ha", opts)
 -- toggle nvimTree
 keymap("n", "<Leader>e", ":NvimTreeToggle<CR>", opts)
 
+-- save on exit
+keymap("n", "<C-s>", ":w<CR>", opts)
 
 -- Move between tabs
 keymap("n", "<C-h>", "<C-w>h", opts)
