@@ -22,6 +22,14 @@ keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- autocomplete brackets
+keymap("i", "{",  "{}<Esc>ha", opts)
+keymap("i", "[",  "[]<Esc>ha", opts)
+keymap("i", "(",  "()<Esc>ha", opts)
+keymap("i", "'",  "''<Esc>ha", opts)
+keymap("i", '"',  '""<Esc>ha', opts)
+keymap("i", "`" , "``<Esc>ha", opts)
+
 
 -- toggle nvimTree
 keymap("n", "<Leader>e", ":NvimTreeToggle<CR>", opts)
