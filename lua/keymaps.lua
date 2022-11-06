@@ -23,11 +23,11 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 
--- toggle Lexplore
-keymap("n", "<leader>e", ":Lex 30<cr>", opts)
+-- toggle nvimTree
+keymap("n", "<Leader>e", ":NvimTreeToggle<CR>", opts)
 
 
--- Split navigation
+-- Move between tabs
 keymap("n", "<C-h>", "<C-w>h", opts)
 keymap("n", "<C-j>", "<C-w>j", opts)
 keymap("n", "<C-k>", "<C-w>k", opts)
