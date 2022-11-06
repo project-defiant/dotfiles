@@ -37,4 +37,7 @@ return require('packer').startup(function(use)
 
     -- Some color scheme other then default
     use("arcticicestudio/nord-vim")
-end)
+		-- nvim tree
+		use('nvim-tree/nvim-web-devicons')
+		use('nvim-tree/nvim-tree.lua')
+	end)
