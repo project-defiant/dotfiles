@@ -23,3 +23,5 @@ vim.cmd "set whichwrap+=<,>,[,],h,l" -- `l` can now move to the next line
 vim.cmd [[set iskeyword+=-]]
 vim.opt.clipboard:append("unnamedplus") -- to use in WSL2 install `scoop install win32yank` by powershell
 vim.wo.fillchars='eob: '  -- remove ~ from the begginign of the lines
+vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
+

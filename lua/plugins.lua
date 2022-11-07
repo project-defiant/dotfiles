@@ -46,4 +46,5 @@ return require('packer').startup(function(use)
     }
 		use('glepnir/lspsaga.nvim')
 		use('mhartington/oceanic-next')
+		use('psf/black')
 	end)
