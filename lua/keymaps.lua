@@ -50,8 +50,11 @@ keymap("n", "<C-Up>", ":resize +2<CR>", opts)
 keymap("n", "<C-Left>", ":vertical resize -2<CR>", opts)
 keymap("n", "<C-Right>", ":vertical resize +2<CR>", opts)
 
-
 -- Create a new empty file
 keymap("n", "<Leader>n", ":new<CR>", opts)
 keymap("n", "<Leader>v", ":vnew<CR>", opts)
 keymap("i", "ii", "<ESC>", opts)
+
+-- Telescope 
+keymap("n", "<Leader>f", ":Telescope live_grep<CR>", opts)
+keymap("n", "<Leader>p", ":Telescope find_files<CR>", opts)
