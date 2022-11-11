@@ -47,4 +47,6 @@ return require('packer').startup(function(use)
 		use('glepnir/lspsaga.nvim')
 		use('mhartington/oceanic-next')
 		use('psf/black')
+		use { 'nvim-lualine/lualine.nvim', 
+		requires = { 'kyazdani42/nvim-web-devicons', opt = true }}
 	end)
