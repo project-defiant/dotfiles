@@ -24,4 +24,6 @@ vim.cmd [[set iskeyword+=-]]
 vim.opt.clipboard:append("unnamedplus") -- to use in WSL2 install `scoop install win32yank` by powershell
 vim.wo.fillchars='eob: '  -- remove ~ from the begginign of the lines
 vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
+vim.cmd [[autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll]]
+vim.cmd [[ autocmd BufRead,BufNewFile *.org set filetype=org ]]
 
