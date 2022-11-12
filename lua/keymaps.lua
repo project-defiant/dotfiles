@@ -58,3 +58,8 @@ keymap("i", "ii", "<ESC>", opts)
 -- Telescope 
 keymap("n", "<Leader>f", ":Telescope live_grep<CR>", opts)
 keymap("n", "<Leader>p", ":Telescope find_files<CR>", opts)
+
+
+-- Commentary
+keymap("n", "<C-_>", ":Commentary<CR>", opts)
+
