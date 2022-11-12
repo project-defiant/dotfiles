@@ -21,9 +21,16 @@ The configuration enables:
 - [x] treesitter for python & rust
 - [x] pylint, flake8 & black integration (requires above packages in venv)
 - [x] ocean style
-- [ ] file speific commenting
+- [x] file speific commenting
+- [x] bash lsp
 - [ ] enhanced python development
 - [ ] R integration
 - [ ] go integration
 - [ ] js integration
 - [ ] c++ integration
+- [ ] markdown parser and preview
+- [ ] auto close html tags
+
+Things to consider:
+- [] null-ls
+
