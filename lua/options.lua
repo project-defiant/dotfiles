@@ -24,4 +24,7 @@ vim.cmd [[set iskeyword+=-]]
 vim.opt.clipboard:append("unnamedplus") -- to use in WSL2 install `scoop install win32yank` by powershell
 vim.wo.fillchars='eob: '  -- remove ~ from the begginign of the lines
 vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
+vim.cmd [[call neomake#configure#automake('nrw', 50)]]
+vim.cmd [[ let g:neomake_python_enabled_makers = ['pylint', 'flake8', 'black', 'mypy'] ]]
+vim.cmd [[let g:python3_host_prog = '/home/szszyszkowski/miniconda3/bin/python']]
 
