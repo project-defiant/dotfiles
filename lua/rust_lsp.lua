@@ -85,7 +85,6 @@ cmp.setup({
     { name = "buffer" },
   },
 })
-require'lspconfig'.pyright.setup{}
 
 local keymap = vim.keymap.set
 local saga = require('lspsaga')

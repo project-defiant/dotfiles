@@ -30,7 +30,6 @@ keymap("i", "'",  "''<Esc>ha", opts)
 keymap("i", '"',  '""<Esc>ha', opts)
 keymap("i", "`" , "``<Esc>ha", opts)
 
-
 -- toggle nvimTree
 keymap("n", "<Leader>e", ":NvimTreeToggle<CR>", opts)
 
