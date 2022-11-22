@@ -51,12 +51,8 @@ return require('packer').startup(function(use)
 	use("tpope/vim-commentary")
 	use { 'glepnir/dashboard-nvim' }
 	-- install without yarn or npm
-	use({
-		"iamcco/markdown-preview.nvim",
-		run = function() vim.fn["mkdp#util#install"]() end,
-	})
-
 	use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install",
 		setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
 	use("jose-elias-alvarez/null-ls.nvim")
+	use('jalvesaq/Nvim-R')
 end)
