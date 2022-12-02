@@ -9,7 +9,7 @@ The editor of choise is neovim, for which I have created config, that can be eas
 Prerequisitories are:
 
 - [x] Packer - see (repo)[https://github.com/wbthomason/packer.nvim] for the installation steps
-- [x] neovim v0.8
+- [x] neovim v0.8 # possibility of installation by source/apt
 - [x] list of nvim plugins, that are installed with `PackerInstall`
 
 
@@ -24,13 +24,18 @@ The configuration enables:
 - [x] file speific commenting
 - [x] bash lsp
 - [ ] enhanced python development
-- [ ] R integration
+- [x] R integration
 - [ ] go integration
 - [ ] js integration
 - [ ] c++ integration
 - [ ] markdown parser and preview
 - [ ] auto close html tags
-
+- [ ] jsonnet lsp
 Things to consider:
 - [] null-ls
+- [] test yaml lsp
 
+
+## integration with DOTFILES
+
+dotfiles repo needs to be linked to the `~/.config/nvim` directory in order to work
