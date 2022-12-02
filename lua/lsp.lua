@@ -68,3 +68,4 @@ capabilities.textDocument.completion.completionItem.snippetSupport = true
 -- r lsp
 
 require 'lspconfig'.r_language_server.setup {}
+require('lspconfig').yamlls.setup {}
