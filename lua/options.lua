@@ -26,3 +26,6 @@ vim.wo.fillchars = 'eob: ' -- remove ~ from the begginign of the lines
 vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
 vim.cmd [[autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll]]
 vim.cmd [[ autocmd BufRead,BufNewFile *.org set filetype=org ]]
+
+-- autocommand for filetype
+vim.cmd [[autocmd FileType r setlocal shiftwidth=1 softtabstop=1 tabstop=1 expandtab]]

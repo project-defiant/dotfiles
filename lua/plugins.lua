@@ -60,4 +60,13 @@ return require('packer').startup(function(use)
 	use('gaalcaras/ncm-R')
 	use('ncm2/ncm2')
 	use('jaredgorski/spacecamp')
+	use('LukeGoodsell/nextflow-vim')
+	use {'romgrk/barbar.nvim', wants = 'nvim-web-devicons'}
+	use({
+    'rose-pine/neovim',
+    as = 'rose-pine',
+    config = function()
+        vim.cmd('colorscheme rose-pine')
+    end
+	})
 end)
