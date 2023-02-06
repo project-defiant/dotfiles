@@ -43,7 +43,11 @@ return require('packer').startup(function(use)
 		'nvim-treesitter/nvim-treesitter',
 		run = ':TSUpdate'
 	}
-	use('glepnir/lspsaga.nvim')
+	--use {
+	--		'glepnir/lspsaga.nvim',
+	-- fix version of the saga to v0.2.4, 0.2.5 has breaking changes
+	--		commit = "e018bb0c6a9c355fa882dc6b278abb30f776e8a0"
+	--	}
 	use('mhartington/oceanic-next')
 	use('psf/black')
 	use { 'nvim-lualine/lualine.nvim',
@@ -61,12 +65,15 @@ return require('packer').startup(function(use)
 	use('ncm2/ncm2')
 	use('jaredgorski/spacecamp')
 	use('LukeGoodsell/nextflow-vim')
-	use {'romgrk/barbar.nvim', wants = 'nvim-web-devicons'}
+	use { 'romgrk/barbar.nvim', wants = 'nvim-web-devicons' }
 	use({
-    'rose-pine/neovim',
-    as = 'rose-pine',
-    config = function()
-        vim.cmd('colorscheme rose-pine')
-    end
+		'rose-pine/neovim',
+		as = 'rose-pine',
+		config = function()
+			vim.cmd('colorscheme rose-pine')
+		end
 	})
+	use { 'sbdchd/neoformat' } -- prettier
+	use { 'heavenshell/vim-jsdoc' }
+	use { 'brenoprata10/nvim-highlight-colors' }
 end)

@@ -29,3 +29,11 @@ vim.cmd [[ autocmd BufRead,BufNewFile *.org set filetype=org ]]
 
 -- autocommand for filetype
 vim.cmd [[autocmd FileType r setlocal shiftwidth=1 softtabstop=1 tabstop=1 expandtab]]
+-- eslint on save
+vim.cmd [[autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll]]
+-- colors for css
+require('nvim-highlight-colors').setup {
+	render = "background",
+	enable_named_colors = true,
+	enable_tailwind = true
+}
