@@ -42,12 +42,13 @@ end
 ---@param opts? { force?: boolean } force: sync even when a venv exists
 function M.ensure(root, cb, opts)
   local force = opts and opts.force
-  if not force and M.venv(root) then
-    vim.schedule(function() cb(true) end)
-    return
-  end
+  -- join an in-flight sync first: uv creates .venv/bin/python before installing packages
   if inflight[root] then
     table.insert(inflight[root], cb)
+    return
+  end
+  if not force and M.venv(root) then
+    vim.schedule(function() cb(true) end)
     return
   end
   if failed[root] then

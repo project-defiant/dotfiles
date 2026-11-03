@@ -59,6 +59,21 @@ describe("cc.pyenv", function()
     assert.same({ true, true, true }, oks)
     assert.equals(1, #vim.fn.readfile(count_file))
   end)
+  it("waits for an in-flight sync even once .venv/bin/python exists", function()
+    -- uv creates the interpreter before installing packages; a caller arriving then must not see a half-built venv
+    vim.fn.mkdir(d .. "/mid", "p"); local gate = d .. "/gate"
+    py.sync_cmd = { "sh", "-c", "mkdir -p .venv/bin; touch .venv/bin/python; chmod +x .venv/bin/python; while [ ! -f " .. gate .. " ]; do sleep 0.05; done; touch .venv/bin/ty; chmod +x .venv/bin/ty" }
+    local first, late
+    py.ensure(d .. "/mid", function(ok) first = ok end)
+    assert.is_true(vim.wait(2000, function() return py.venv(d .. "/mid") ~= nil end))
+    py.ensure(d .. "/mid", function(ok) late = { ok, py.tool(d .. "/mid", "ty") } end)
+    vim.wait(200, function() return late ~= nil end)
+    assert.is_nil(late)
+    vim.fn.writefile({}, gate)
+    assert.is_true(vim.wait(3000, function() return late ~= nil end))
+    assert.is_true(first)
+    assert.same({ true, d .. "/mid/.venv/bin/ty" }, late)
+  end)
   it("does not retry a failed sync until reset, with one error notification", function()
     vim.fn.mkdir(d .. "/bad", "p"); py.sync_cmd = { "sh", "-c", "echo boom >&2; exit 1" }
     local r1, r2
