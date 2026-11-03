@@ -45,4 +45,26 @@ describe("cc.worktree", function()
     assert.equals(p.wt["main"], vim.fn.getcwd())
     vim.cmd("bwipeout!")
   end)
+  it("ignores non-file buffers when switching", function()
+    wt.switch(p.wt["main"])
+    local scratch = vim.api.nvim_create_buf(true, true)
+    vim.bo[scratch].buftype = "nofile"
+    vim.api.nvim_buf_set_name(scratch, "scratch-view")
+    vim.bo[scratch].modified = true
+    assert.is_true(wt.switch(p.wt["feat/a"]))
+    assert.is_true(vim.api.nvim_buf_is_valid(scratch))
+    vim.api.nvim_buf_delete(scratch, { force = true })
+  end)
+  it("is a no-op when switching to the active worktree", function()
+    wt.switch(p.wt["main"])
+    local f = p.wt["main"] .. "/pis/pyproject.toml"
+    vim.cmd.edit(f)
+    local fired = false
+    local id = vim.api.nvim_create_autocmd("User", { pattern = "CcWorktreeChanged",
+      callback = function() fired = true end })
+    assert.is_true(wt.switch(p.wt["main"]))
+    vim.api.nvim_del_autocmd(id)
+    assert.is_false(fired)
+    assert.is_true(vim.fn.bufnr(f) ~= -1)
+  end)
 end)

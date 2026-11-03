@@ -98,6 +98,7 @@ end
 function M.switch(path)
   local target_path = norm(path)
   local old = current
+  if old and old.path == target_path then return true end
   local wts = M.list(target_path)
   local target = M.owner(target_path, wts)
   if not target then return false, "not a worktree: " .. path end
@@ -109,7 +110,8 @@ function M.switch(path)
     local unsaved = {}
     for _, b in ipairs(vim.api.nvim_list_bufs()) do
       local name = vim.api.nvim_buf_get_name(b)
-      if name ~= "" and vim.api.nvim_buf_is_loaded(b) then
+      if name ~= "" and not name:match("^%w+://") and vim.bo[b].buftype == ""
+        and vim.api.nvim_buf_is_loaded(b) then
         local o = M.owner(name, old_wts)
         if o and o.path == old.path then
           owned[#owned + 1] = b
