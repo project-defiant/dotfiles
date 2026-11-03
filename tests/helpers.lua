@@ -64,4 +64,19 @@ function M.bare_project(opts)
   return { root = root, wt = wt }
 end
 
+--- Give a bare_project an `origin` whose main is one commit ahead of local main.
+---@param p { root: string, wt: table<string,string> }
+function M.with_origin(p)
+  local remote = M.tmpdir() .. "/remote.git"
+  M.git(p.root, { "init", "--bare", "--initial-branch=main", remote })
+  M.git(p.root, { "remote", "add", "origin", remote })
+  M.git(p.root, { "config", "remote.origin.fetch", "+refs/heads/*:refs/remotes/origin/*" })
+  M.git(p.root, { "push", "origin", "main" })
+  local clone = M.tmpdir() .. "/clone"
+  M.git(M.tmpdir(), { "clone", remote, clone })
+  M.git(clone, { "-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "--allow-empty", "-m", "remote only" })
+  M.git(clone, { "push", "origin", "main" })
+  M.git(p.root, { "fetch", "origin" })
+end
+
 return M
