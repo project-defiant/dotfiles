@@ -14,7 +14,7 @@ return {
       enhanced_diff_hl = true,
       file_panel = { listing_style = "tree" },
       keymaps = {
-        view = { { "n", "m", function() require("cc.marks").toggle_current() end, { desc = "Toggle file reviewed" } } },
+        -- no `m` in the diff panes: it would shadow m{a-z} in the editable working-tree pane
         file_panel = { { "n", "m", function() require("cc.marks").toggle_current() end, { desc = "Toggle file reviewed" } } },
       },
     },
