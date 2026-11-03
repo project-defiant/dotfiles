@@ -6,8 +6,12 @@ describe("cc.review.base", function()
 
   it("defaults to merge-base with origin/main", function()
     h.with_origin(p)
-    local fa = p.wt["feat/a"]
-    assert.equals(h.git(fa, { "merge-base", "origin/main", "HEAD" }), (r.base(fa)))
+    h.git(p.root, { "worktree", "add", "-b", "feat/c", p.root .. "/feat/c", "origin/main" })
+    local fc = p.root .. "/feat/c"
+    h.git(fc, { "commit", "--allow-empty", "-m", "c1" })
+    local expected = h.git(fc, { "merge-base", "origin/main", "HEAD" })
+    assert.are_not.equals(h.git(fc, { "merge-base", "main", "HEAD" }), expected)
+    assert.equals(expected, (r.base(fc)))
   end)
   it("falls back to local main without a remote", function()
     local fa = p.wt["feat/a"]
