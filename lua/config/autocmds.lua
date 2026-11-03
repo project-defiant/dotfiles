@@ -8,3 +8,4 @@
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
 require("cc.worktree").setup()
+require("cc.disksync").setup()

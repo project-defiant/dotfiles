@@ -1,0 +1,97 @@
+local d = require("cc.disksync")
+
+describe("cc.disksync.decide", function()
+  local f, buf, notes, orig_notify
+  before_each(function()
+    notes = {}
+    orig_notify = vim.notify
+    vim.notify = function(msg, level)
+      notes[#notes + 1] = { msg = msg, level = level }
+    end
+    f = vim.fn.tempname() .. ".py"
+    vim.fn.writefile({ "a = 1" }, f)
+    vim.cmd.edit(f)
+    buf = vim.api.nvim_get_current_buf()
+  end)
+  after_each(function()
+    vim.notify = orig_notify
+    vim.cmd("silent! %bwipeout!")
+    vim.fn.delete(f)
+  end)
+
+  it("reloads unmodified buffers", function()
+    assert.equals("reload", d.decide(buf, "changed"))
+    assert.equals(0, #notes)
+  end)
+
+  it("keeps modified buffers, flags conflict and warns once", function()
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "a = 2" })
+    assert.equals("", d.decide(buf, "changed"))
+    assert.equals("changed", vim.b[buf].cc_disk_conflict)
+    assert.equals(1, #notes)
+    assert.equals(vim.log.levels.WARN, notes[1].level)
+    assert.truthy(notes[1].msg:find(":CcDiffDisk", 1, true))
+    assert.truthy(notes[1].msg:find(vim.fn.fnamemodify(f, ":t"), 1, true))
+  end)
+
+  it("never reloads a deleted file", function()
+    os.remove(f)
+    assert.equals("", d.decide(buf, "deleted"))
+    assert.equals("a = 1", vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1])
+    assert.is_true(vim.api.nvim_buf_is_valid(buf))
+    assert.equals("deleted", vim.b[buf].cc_disk_conflict)
+    assert.equals(1, #notes)
+  end)
+
+  it("end-to-end: checktime pulls in external change", function()
+    d.setup()
+    vim.uv.sleep(1100) -- mtime resolution
+    vim.fn.writefile({ "a = 3" }, f)
+    vim.cmd.checktime()
+    assert.equals("a = 3", vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1])
+  end)
+
+  it("end-to-end: modified buffer is kept on external change", function()
+    d.setup()
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "a = 2" })
+    vim.uv.sleep(1100)
+    vim.fn.writefile({ "a = 3" }, f)
+    vim.cmd.checktime()
+    assert.equals("a = 2", vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1])
+    assert.truthy(vim.b[buf].cc_disk_conflict)
+  end)
+
+  it("end-to-end: deleted file keeps buffer", function()
+    d.setup()
+    os.remove(f)
+    vim.cmd.checktime()
+    assert.is_true(vim.api.nvim_buf_is_valid(buf))
+    assert.equals("a = 1", vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1])
+  end)
+
+  it("setup is idempotent", function()
+    d.setup()
+    d.setup()
+    local n = #vim.api.nvim_get_autocmds({ group = "cc_disksync", event = "FileChangedShell" })
+    assert.equals(1, n)
+  end)
+
+  it("CcDiffDisk diffs against disk, and notifies when file is gone", function()
+    d.setup()
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "a = 2" })
+    vim.cmd("CcDiffDisk")
+    assert.equals(2, #vim.api.nvim_tabpage_list_wins(0))
+    assert.is_true(vim.wo.diff)
+    local scratch = vim.api.nvim_get_current_buf()
+    assert.are_not.equals(buf, scratch)
+    assert.equals("a = 1", vim.api.nvim_buf_get_lines(scratch, 0, 1, false)[1])
+    assert.is_false(vim.bo[scratch].modifiable)
+    vim.cmd("diffoff!")
+    vim.cmd("silent! only")
+    vim.api.nvim_set_current_buf(buf)
+    os.remove(f)
+    notes = {}
+    vim.cmd("CcDiffDisk")
+    assert.equals(1, #notes)
+  end)
+end)
