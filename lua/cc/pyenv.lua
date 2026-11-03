@@ -92,6 +92,49 @@ function M.ensure(root, cb, opts)
   end
 end
 
+local LSP_NAMES = { ty = true, ruff = true }
+
+--- ty/ruff clients whose root is not inside `path` (they belong to another worktree).
+---@param path string
+---@return vim.lsp.Client[]
+function M.foreign_clients(path)
+  path = vim.uv.fs_realpath(path) or path
+  local out = {}
+  for _, c in ipairs(vim.lsp.get_clients()) do
+    if LSP_NAMES[c.name] then
+      local r = c.root_dir and (vim.uv.fs_realpath(c.root_dir) or c.root_dir)
+      if not r or (r ~= path and r:sub(1, #path + 1) ~= path .. "/") then out[#out + 1] = c end
+    end
+  end
+  return out
+end
+
+---@param path string
+function M.stop_foreign_clients(path)
+  for _, c in ipairs(M.foreign_clients(path)) do c:stop() end
+end
+
+--- neotest-python adapter running pytest via `uv run` with the package root as cwd.
+function M.neotest_adapter()
+  local adapter = require("neotest-python")({
+    runner = "pytest",
+    python = function(root) return { "uv", "run", "--frozen", "--project", root, "python" } end,
+  })
+  local build_spec = adapter.build_spec
+  adapter.build_spec = function(args)
+    local spec = build_spec(args)
+    local pos = args.tree:data()
+    -- same root neotest-python passed to `python` above
+    local root = spec and pos and require("neotest-python.base").get_root(pos.path)
+    if root then
+      spec.cwd = root
+      if spec.strategy then spec.strategy.cwd = root end
+    end
+    return spec
+  end
+  return adapter
+end
+
 local function current_root()
   local name = vim.api.nvim_buf_get_name(0)
   local root = name ~= "" and M.root(name) or nil
