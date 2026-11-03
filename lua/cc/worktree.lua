@@ -93,6 +93,27 @@ function M.nested(wt, wts)
   return out
 end
 
+--- Project root: parent dir of the git common dir (the bare repo's parent, or the main checkout).
+---@param path string
+---@return string|nil
+function M.root(path)
+  local res = vim.system({ "git", "-C", path, "rev-parse", "--path-format=absolute", "--git-common-dir" }, { text = true }):wait()
+  if res.code ~= 0 then return nil end
+  return norm(vim.fs.dirname(vim.trim(res.stdout)))
+end
+
+---@param w Worktree
+---@param root? string project root, derived from `w` when omitted
+---@return string
+function M.label(w, root)
+  root = root or M.root(w.path) or vim.fs.dirname(w.path)
+  local rel = w.path
+  if w.path:sub(1, #root + 1) == root .. "/" then rel = w.path:sub(#root + 2) end
+  if w.detached or not w.branch then return "(detached) " .. rel end
+  if rel == w.branch then return w.branch end
+  return w.branch .. "  (" .. rel .. ")"
+end
+
 ---@param path string
 ---@return boolean, string|nil
 function M.switch(path)
