@@ -94,7 +94,12 @@ describe("cc.pyenv", function()
     py.sync_cmd = { "sh", "-c", "mkdir -p .venv/bin; touch .venv/bin/python; chmod +x .venv/bin/python" }
     vim.cmd.edit(d .. "/bad2/src/x.py")
     vim.cmd("CcPyenvSync")
-    assert.is_true(vim.wait(3000, function() return py.venv(d .. "/bad2") ~= nil end))
+    -- join the in-flight sync so it finishes (and notifies) while vim.notify is still stubbed
+    local r2; py.ensure(d .. "/bad2", function(ok) r2 = ok end)
+    assert.is_true(vim.wait(3000, function() return r2 ~= nil end))
+    assert.is_true(r2)
+    assert.is_not_nil(py.venv(d .. "/bad2"))
+    assert.matches("uv sync done", notes[#notes].msg)
     vim.cmd("silent! %bwipeout!")
   end)
   it("commands notify instead of erroring outside a package", function()
