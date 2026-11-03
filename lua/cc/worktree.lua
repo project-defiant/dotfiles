@@ -108,9 +108,13 @@ end
 function M.label(w, root)
   root = root or M.root(w.path) or vim.fs.dirname(w.path)
   local rel = w.path
-  if w.path:sub(1, #root + 1) == root .. "/" then rel = w.path:sub(#root + 2) end
-  if w.detached or not w.branch then return "(detached) " .. rel end
-  if rel == w.branch then return w.branch end
+  if w.path == root then
+    rel = "" -- main checkout of an ordinary (non-bare) repo
+  elseif w.path:sub(1, #root + 1) == root .. "/" then
+    rel = w.path:sub(#root + 2)
+  end
+  if w.detached or not w.branch then return vim.trim("(detached) " .. rel) end
+  if rel == "" or rel == w.branch then return w.branch end
   return w.branch .. "  (" .. rel .. ")"
 end
 
@@ -124,24 +128,22 @@ function M.switch(path)
   local target = M.owner(target_path, wts)
   if not target then return false, "not a worktree: " .. path end
 
-  local owned = {}
-  if old then
-    local old_wts = M.list(old.path)
-    if #old_wts == 0 then old_wts = { old } end
-    local unsaved = {}
-    for _, b in ipairs(vim.api.nvim_list_bufs()) do
-      local name = vim.api.nvim_buf_get_name(b)
-      if name ~= "" and not name:match("^%w+://") and vim.bo[b].buftype == ""
-        and vim.api.nvim_buf_is_loaded(b) then
-        local o = M.owner(name, old_wts)
-        if o and o.path == old.path then
-          owned[#owned + 1] = b
-          if vim.bo[b].modified then unsaved[#unsaved + 1] = vim.fn.fnamemodify(name, ":.") end
-        end
+  -- every file buffer (loaded, or unloaded but listed) owned by a worktree other than the target;
+  -- buffers outside all worktrees (owner nil) are left alone
+  local owned, unsaved = {}, {}
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    local name = vim.api.nvim_buf_get_name(b)
+    local loaded = vim.api.nvim_buf_is_loaded(b)
+    if name ~= "" and not name:match("^%w+://") and vim.bo[b].buftype == ""
+      and (loaded or vim.bo[b].buflisted) then
+      local o = M.owner(name, wts)
+      if o and o.path ~= target.path then
+        owned[#owned + 1] = b
+        if loaded and vim.bo[b].modified then unsaved[#unsaved + 1] = vim.fn.fnamemodify(name, ":.") end
       end
     end
-    if #unsaved > 0 then return false, "unsaved: " .. table.concat(unsaved, ", ") end
   end
+  if #unsaved > 0 then return false, "unsaved: " .. table.concat(unsaved, ", ") end
 
   for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
     local is_diffview = false
