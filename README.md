@@ -71,8 +71,9 @@ make smoke   # start the full config headless, fail on errors in :messages
 ```
 
 `scripts/acceptance.lua` walks the whole workflow (worktree switch, branch diff, marks, commit
-history, disk sync, refused switch, ty and ruff attach) against a real repository, without
-writing to it. Run it from the project root:
+history, disk sync, refused switch, ty and ruff attach) against a real repository. It does not
+modify tracked files; the Python step may create the package `.venv` and tool caches through the
+normal environment sync. Run it from the project root:
 
 ```sh
 cd ~/Projects/pipeline && nvim --headless -c "luafile ~/.config/nvim/scripts/acceptance.lua"
